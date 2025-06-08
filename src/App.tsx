@@ -1,43 +1,80 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import SplashScreen from './components/features/splash/SplashScreen';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import Home from './pages/Home';
-import HostelsPage from './pages/HostelsPage';
-import HostelDetailPage from './pages/HostelDetailPage';
-import { HostelProvider } from './contexts/HostelContext';
+import HostelOwnerPortal from './pages/HostelOwnerPortal';
+import HostelOwnerDashboard from './pages/HostelOwnerDashboard';
+import TestPortal from './pages/TestPortal';
+import SplashScreen from './components/features/splash/SplashScreen';
+import { useState, useEffect } from 'react';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
-  // Check if splash screen has been shown before
   useEffect(() => {
-    const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
-    if (hasSeenSplash) {
+    const timer = setTimeout(() => {
       setShowSplash(false);
-    } else {
-      // Set flag in session storage
-      sessionStorage.setItem('hasSeenSplash', 'true');
-    }
+    }, 4500);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-  };
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
 
   return (
-    <HostelProvider>
-      {showSplash ? (
-        <SplashScreen onComplete={handleSplashComplete} />
-      ) : (
         <Router>
+      <AuthProvider>
           <Routes>
+          {/* Public Routes */}
             <Route path="/" element={<Home />} />
-            <Route path="/hostels" element={<HostelsPage />} />
-            <Route path="/hostels/:id" element={<HostelDetailPage />} />
+          <Route path="/test" element={<TestPortal />} />
+          
+          {/* Hostel Owner Routes */}
+          <Route path="/hostel-owner" element={<Navigate to="/hostel-owner/login" replace />} />
+          <Route path="/hostel-owner/login" element={<HostelOwnerPortal />} />
+          <Route path="/hostel-owner/signup" element={<HostelOwnerPortal />} />
+
+          {/* Protected Hostel Owner Routes */}
+          <Route
+            path="/hostel-owner/dashboard"
+            element={
+              <ProtectedRoute requiredRole="hostel_owner">
+                <HostelOwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hostel-owner/hostels"
+            element={
+              <ProtectedRoute requiredRole="hostel_owner">
+                <HostelOwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hostel-owner/bookings"
+            element={
+              <ProtectedRoute requiredRole="hostel_owner">
+                <HostelOwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hostel-owner/settings"
+            element={
+              <ProtectedRoute requiredRole="hostel_owner">
+                <HostelOwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Catch all route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+      </AuthProvider>
         </Router>
-      )}
-    </HostelProvider>
   );
 }
 
