@@ -7,7 +7,9 @@ const Dashboard = () => {
   const { user, isAuthenticated } = useAuth();
   
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    // Redirect to appropriate login page based on the intended role
+    // For now, default to owner login since that's the main dashboard
+    return <Navigate to="/hostel-owner/login" />;
   }
 
   const getDashboardContentByRole = () => {
@@ -15,9 +17,9 @@ const Dashboard = () => {
       case 'student':
         return <StudentDashboard />;
       case 'owner':
-        return <OwnerDashboard />;
+        return <Navigate to="/hostel-owner" />;
       case 'broker':
-        return <BrokerDashboard />;
+        return <Navigate to="/hostel-broker" />;
       default:
         return <p>Unknown user role</p>;
     }

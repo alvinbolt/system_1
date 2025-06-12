@@ -1,61 +1,45 @@
-import { Building, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, ArrowUp } from 'lucide-react';
+import { Building, Mail, Phone, MapPin, Facebook, Twitter, Instagram, ArrowUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 const Footer = () => {
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer className="bg-blue-900 text-white relative">
-      {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-10"
-        style={{ backgroundImage: 'url(/footer-bg.jpg)' }}
-      />
-
-      <div className="container mx-auto px-8 py-12 relative">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center md:text-left">
+    <footer className="bg-primary-900 text-white">
+      <div className="container mx-auto px-4 pt-12 pb-8">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Company Info */}
-          <div className="space-y-4">
-            <Link to="/" className="flex items-center justify-center md:justify-start space-x-2">
-              <Building className="h-8 w-8" />
-              <span className="text-xl font-display font-bold">HostelConnect</span>
-            </Link>
-            <p className="text-blue-100">
-              Your trusted platform for finding the perfect student accommodation near universities.
+          <div className="text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start mb-6">
+              <img src="/images/logo1.png" alt="HostelConnect Logo" className="h-10 w-auto" />
+              <span className="ml-2 text-xl font-display font-bold text-white">HostelConnect</span>
+            </div>
+            <p className="text-gray-300 text-sm leading-relaxed mb-6">
+              Connecting students with premium accommodation options across Ugandan universities.
             </p>
             <div className="flex justify-center md:justify-start space-x-4">
-              <motion.a
-                href="#"
-                whileHover={{ scale: 1.1 }}
-                className="p-2 bg-blue-800 rounded-full hover:bg-blue-700 transition-colors"
+              <motion.a 
+                href="#" 
+                whileHover={{ scale: 1.1, y: -2 }}
+                className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"
               >
                 <Facebook className="h-5 w-5" />
               </motion.a>
-              <motion.a
-                href="#"
-                whileHover={{ scale: 1.1 }}
-                className="p-2 bg-blue-800 rounded-full hover:bg-blue-700 transition-colors"
+              <motion.a 
+                href="#" 
+                whileHover={{ scale: 1.1, y: -2 }}
+                className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"
               >
                 <Twitter className="h-5 w-5" />
               </motion.a>
-              <motion.a
-                href="#"
-                whileHover={{ scale: 1.1 }}
-                className="p-2 bg-blue-800 rounded-full hover:bg-blue-700 transition-colors"
+              <motion.a 
+                href="#" 
+                whileHover={{ scale: 1.1, y: -2 }}
+                className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"
               >
                 <Instagram className="h-5 w-5" />
               </motion.a>
@@ -63,25 +47,40 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Quick Links</h3>
-            <ul className="space-y-2">
-              {['About Us', 'Contact', 'Privacy Policy', 'Terms of Service'].map((item) => (
-                <motion.li
-                  key={item}
+          <div className="text-center md:text-left">
+            <h3 className="text-lg font-semibold mb-6 relative inline-block">
+              Quick Links
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-secondary-500 transform scale-x-0 transition-transform group-hover:scale-x-100" />
+            </h3>
+            <ul className="space-y-3">
+              {[
+                { to: '/', label: 'Home' },
+                { to: '/hostels', label: 'Hostels' },
+                { to: '/universities', label: 'Universities' },
+                { to: '/about', label: 'About Us' },
+                { to: '/contact', label: 'Contact Us' }
+              ].map((link) => (
+                <motion.li 
+                  key={link.to}
                   whileHover={{ x: 5 }}
-                  className="text-blue-100 hover:text-white transition-colors"
+                  className="group"
                 >
-                  <Link to={`/${item.toLowerCase().replace(' ', '-')}`}>{item}</Link>
+                  <Link 
+                    to={link.to} 
+                    className="text-gray-300 hover:text-white transition-colors inline-flex items-center"
+                  >
+                    <span className="w-1.5 h-1.5 bg-secondary-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {link.label}
+                  </Link>
                 </motion.li>
               ))}
             </ul>
           </div>
 
           {/* Universities */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Universities</h3>
-            <ul className="space-y-2">
+          <div className="text-center md:text-left">
+            <h3 className="text-lg font-semibold mb-6">Universities</h3>
+            <ul className="space-y-3">
               {[
                 'Makerere University',
                 'Kyambogo University',
@@ -89,12 +88,16 @@ const Footer = () => {
                 'Gulu University',
                 'Busitema University'
               ].map((university) => (
-                <motion.li
+                <motion.li 
                   key={university}
                   whileHover={{ x: 5 }}
-                  className="text-blue-100 hover:text-white transition-colors"
+                  className="group"
                 >
-                  <Link to={`/hostels?university=${encodeURIComponent(university)}`}>
+                  <Link 
+                    to={`/hostels?university=${encodeURIComponent(university)}`}
+                    className="text-gray-300 hover:text-white transition-colors inline-flex items-center"
+                  >
+                    <span className="w-1.5 h-1.5 bg-secondary-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                     {university}
                   </Link>
                 </motion.li>
@@ -102,42 +105,51 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Contact Us</h3>
-            <ul className="space-y-3">
-              <li className="flex items-center justify-center md:justify-start space-x-2 text-blue-100">
-                <MapPin className="h-5 w-5" />
-                <span>Kampala, Uganda</span>
-              </li>
-              <li className="flex items-center justify-center md:justify-start space-x-2 text-blue-100">
-                <Phone className="h-5 w-5" />
-                <span>+256 123 456 789</span>
-              </li>
-              <li className="flex items-center justify-center md:justify-start space-x-2 text-blue-100">
-                <Mail className="h-5 w-5" />
-                <span>info@hostelconnect.com</span>
-              </li>
+          {/* Contact */}
+          <div className="text-center md:text-left">
+            <h3 className="text-lg font-semibold mb-6">Contact Us</h3>
+            <ul className="space-y-4">
+              <motion.li 
+                whileHover={{ x: 5 }}
+                className="flex items-center justify-center md:justify-start space-x-3 text-gray-300"
+              >
+                <MapPin className="h-5 w-5 text-secondary-500 flex-shrink-0" />
+                <span className="text-sm">Plot 45, Kampala Road, Kampala, Uganda</span>
+              </motion.li>
+              <motion.li 
+                whileHover={{ x: 5 }}
+                className="flex items-center justify-center md:justify-start space-x-3 text-gray-300"
+              >
+                <Phone className="h-5 w-5 text-secondary-500 flex-shrink-0" />
+                <span className="text-sm">+256 78 123 4567</span>
+              </motion.li>
+              <motion.li 
+                whileHover={{ x: 5 }}
+                className="flex items-center justify-center md:justify-start space-x-3 text-gray-300"
+              >
+                <Mail className="h-5 w-5 text-secondary-500 flex-shrink-0" />
+                <span className="text-sm">info@hostelconnect.ug</span>
+              </motion.li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-blue-800 text-center">
-          <p className="text-blue-100">
-            © {new Date().getFullYear()} HostelConnect. All rights reserved.
-          </p>
+        <div className="mt-10 pt-6 border-t border-gray-700">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <p className="text-gray-400 text-sm">
+              &copy; {new Date().getFullYear()} HostelConnect. All rights reserved.
+            </p>
+            <motion.button
+              onClick={scrollToTop}
+              whileHover={{ y: -5 }}
+              className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp className="h-5 w-5" />
+            </motion.button>
+          </div>
         </div>
-
-        {/* Scroll to Top Button */}
-        <motion.button
-          onClick={scrollToTop}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="fixed bottom-8 right-8 p-3 bg-primary-500 text-white rounded-full shadow-lg hover:bg-primary-600 transition-colors"
-        >
-          <ArrowUp className="h-6 w-6" />
-        </motion.button>
       </div>
     </footer>
   );

@@ -1,35 +1,105 @@
 import { Hostel, University, User, Review } from '../types';
 
+export interface University {
+  id: string;
+  name: string;
+  location: string;
+  imageUrl: string;
+  description?: string;
+  studentCount?: number;
+  hostelCount?: number;
+  establishedYear?: number;
+  website?: string;
+}
+
 export const universities: University[] = [
   {
     id: '1',
     name: 'Makerere University',
     location: 'Kampala',
-    imageUrl: 'https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    imageUrl: '/images/universities/makerere.jpg',
+    description: 'Uganda\'s oldest and premier university, known for excellence in research and education.',
+    studentCount: 35000,
+    hostelCount: 15,
+    establishedYear: 1922,
+    website: 'https://www.mak.ac.ug'
   },
   {
     id: '2',
     name: 'Kyambogo University',
     location: 'Kampala',
-    imageUrl: 'https://images.pexels.com/photos/207684/pexels-photo-207684.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    imageUrl: '/images/universities/kyambogo.jpg',
+    description: 'A leading university in technical and vocational education, teacher training, and special needs education.',
+    studentCount: 25000,
+    hostelCount: 8,
+    establishedYear: 2003,
+    website: 'https://www.kyu.ac.ug'
   },
   {
     id: '3',
-    name: 'Mbarara University',
+    name: 'Mbarara University of Science and Technology',
     location: 'Mbarara',
-    imageUrl: 'https://images.pexels.com/photos/2305098/pexels-photo-2305098.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    imageUrl: '/images/universities/must.jpg',
+    description: 'A leading science and technology university, particularly known for its medical school.',
+    studentCount: 5000,
+    hostelCount: 6,
+    establishedYear: 1989,
+    website: 'https://www.must.ac.ug'
   },
   {
     id: '4',
     name: 'Gulu University',
     location: 'Gulu',
-    imageUrl: 'https://images.pexels.com/photos/256520/pexels-photo-256520.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    imageUrl: '/images/universities/gulu.jpg',
+    description: 'A public university serving northern Uganda, offering diverse academic programs.',
+    studentCount: 8000,
+    hostelCount: 5,
+    establishedYear: 2002,
+    website: 'https://www.gu.ac.ug'
   },
   {
     id: '5',
     name: 'Busitema University',
     location: 'Tororo',
-    imageUrl: 'https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    imageUrl: '/images/universities/busitema.jpg',
+    description: 'A specialized university focusing on engineering, technology, and agricultural sciences.',
+    studentCount: 6000,
+    hostelCount: 4,
+    establishedYear: 2007,
+    website: 'https://www.busitema.ac.ug'
+  },
+  {
+    id: '6',
+    name: 'Kampala International University',
+    location: 'Kampala',
+    imageUrl: '/images/universities/kiu.jpg',
+    description: 'A private university offering diverse programs in health sciences, business, and technology.',
+    studentCount: 12000,
+    hostelCount: 7,
+    establishedYear: 2001,
+    website: 'https://www.kiu.ac.ug'
+  },
+  {
+    id: '7',
+    name: 'Uganda Christian University',
+    location: 'Mukono',
+    imageUrl: '/images/universities/ucu.jpg',
+    description: 'A private Christian university known for its quality education and research.',
+    studentCount: 10000,
+    hostelCount: 8,
+    establishedYear: 1997,
+    website: 'https://www.ucu.ac.ug'
+  },
+  {
+    id: '8',
+    name: 'Uganda Martyrs University',
+    location: 'Nkozi',
+    imageUrl: '/images/universities/ugm.jpg',
+    description: 'A private Catholic university offering programs in various disciplines.',
+    studentCount: 5000,
+    hostelCount: 5,
+    establishedYear: 1993,
+    website: 'https://www.umu.ac.ug'
   }
 ];
 

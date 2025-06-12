@@ -1,24 +1,26 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin, Users } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { universities } from '../../../data/mockData';
 
+// Get top 3 universities by student count
+const popularUniversities = [...universities]
+  .sort((a, b) => (b.studentCount || 0) - (a.studentCount || 0))
+  .slice(0, 3);
+
 const UniversitySection = () => {
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
-      
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.h2 
-            className="text-4xl md:text-5xl font-display font-bold mb-6 bg-gradient-to-r from-primary-900 to-primary-700 bg-clip-text text-transparent"
+            className="text-3xl md:text-4xl font-display font-bold mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            Browse Hostels by University
+            Popular Universities
           </motion.h2>
           <motion.p 
             className="text-gray-600 max-w-2xl mx-auto text-lg"
@@ -27,75 +29,73 @@ const UniversitySection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            Find the perfect accommodation near your campus with our comprehensive listings of approved student hostels.
+            Find hostels near Uganda's top universities with our extensive network of accommodations
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          {universities.map((university, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {popularUniversities.map((university, index) => (
             <motion.div
               key={university.id}
-              className="group relative h-80 overflow-hidden rounded-2xl"
+              className="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 bg-gray-100"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -5 }}
             >
-              {/* Background Image with Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10"></div>
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300 z-10"></div>
-              
-              <img 
-                src={university.imageUrl}
-                alt={university.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              
-              {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-                <h3 className="text-white font-semibold text-xl mb-2 group-hover:text-secondary-400 transition-colors">
-                  {university.name}
-                </h3>
-                <div className="flex items-center text-white/80 text-sm mb-4">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  <span>{university.location}</span>
+              <div className="relative w-full" style={{ paddingBottom: '100%' }}>
+                <div className="absolute inset-0">
+                  <img
+                    src={university.imageUrl}
+                    alt={university.name}
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                 </div>
-                <div className="flex items-center text-white/80 text-sm mb-4">
-                  <Users className="h-4 w-4 mr-1" />
-                  <span>{university.studentCount} Students</span>
-                </div>
-                
-                <Link 
-                  to={`/hostels?university=${encodeURIComponent(university.name)}`}
-                  className="inline-flex items-center text-white hover:text-secondary-400 transition-colors group-hover:translate-x-2 duration-300"
-                >
-                  View Hostels
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
               </div>
               
-              {/* Hover Effect */}
-              <div className="absolute top-4 right-4 bg-white/90 text-primary-900 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-x-4 group-hover:translate-x-0 z-20">
-                <ArrowRight className="h-4 w-4" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-semibold mb-2">{university.name}</h3>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <MapPin className="h-4 w-4" />
+                    <span className="text-sm">{university.location}</span>
+                  </div>
+                  <span className="text-sm bg-white/20 px-3 py-1 rounded-full">
+                    {university.hostelCount} hostels
+                  </span>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* View All Button */}
         <motion.div 
           className="text-center mt-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.5 }}
+          transition={{ duration: 0.5 }}
         >
-          <Link 
+          <Link
             to="/universities"
-            className="inline-flex items-center px-6 py-3 bg-primary-900 hover:bg-primary-800 text-white rounded-xl transition-colors duration-300 group"
+            className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-300"
           >
             View All Universities
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            <svg
+              className="ml-2 h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
           </Link>
         </motion.div>
       </div>

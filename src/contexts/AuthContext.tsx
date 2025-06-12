@@ -1,165 +1,64 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  phone?: string;
-  photoURL?: string;
-  provider?: 'google' | 'email';
-  hostelName?: string;
-  university?: string;
-}
+import { createContext, useContext, useState, ReactNode } from 'react';
+import { User } from '../types';
+import { currentUser as mockUser } from '../data/mockData';
 
 interface AuthContextType {
   user: User | null;
-  loading: boolean;
+  isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, userData: Partial<User>) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  logout: () => Promise<void>;
-  updateProfile: (data: Partial<User>) => Promise<void>;
+  loginBroker: (password: string) => Promise<void>;
+  logout: () => void;
+  register: (userData: Partial<User>, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(mockUser);
+  const isAuthenticated = !!user;
 
-  useEffect(() => {
-    // Check for stored user data
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
-
+  // Mock login function
   const login = async (email: string, password: string) => {
-    try {
-      setLoading(true);
-      // Here you would typically make an API call to your backend
-      const userData: User = {
-        id: '1',
-        email,
-        name: 'Hostel Owner',
-        role: 'hostel_owner',
-        provider: 'email',
-        hostelName: 'Sample Hostel Name',
-        university: 'Makerere University'
-      };
-      
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-      navigate('/hostel-owner/dashboard');
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    } finally {
-      setLoading(false);
+    // In a real app, this would call an API
+    if (email && password) {
+      setUser(mockUser);
+    } else {
+      throw new Error('Invalid credentials');
     }
   };
 
-  const loginWithGoogle = async () => {
-    try {
-      setLoading(true);
-      // Here you would implement Google OAuth
-      // For now, we'll simulate a successful Google login
-      const userData: User = {
-        id: Date.now().toString(),
-        email: 'user@gmail.com',
-        name: 'Google User',
-        role: 'hostel_owner',
-        photoURL: 'https://ui-avatars.com/api/?name=Google+User',
-        provider: 'google',
-        hostelName: 'Google Hostel',
-        university: 'Kyambogo University'
-      };
-      
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-      navigate('/hostel-owner/dashboard');
-    } catch (error) {
-      console.error('Google login failed:', error);
-      throw error;
-    } finally {
-      setLoading(false);
+  // Mock broker login function (password only)
+  const loginBroker = async (password: string) => {
+    // In a real app, this would call an API and verify password
+    const brokerPassword = 'broker123'; // Example fixed password
+    if (password === brokerPassword) {
+      setUser({ ...mockUser, role: 'broker' });
+    } else {
+      throw new Error('Invalid password');
     }
   };
 
-  const signup = async (email: string, password: string, userData: Partial<User>) => {
-    try {
-      setLoading(true);
-      const newUser: User = {
-        id: Date.now().toString(),
-        email,
-        name: userData.name || '',
-        role: 'hostel_owner',
-        phone: userData.phone,
-        provider: 'email',
-        hostelName: userData.hostelName || '',
-        university: userData.university || ''
-      };
-      
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      navigate('/hostel-owner/dashboard');
-    } catch (error) {
-      console.error('Signup failed:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+  // Mock logout function
+  const logout = () => {
+    setUser(null);
   };
 
-  const updateProfile = async (data: Partial<User>) => {
-    try {
-      setLoading(true);
-      if (user) {
-        const updatedUser = { ...user, ...data };
-        setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-      }
-    } catch (error) {
-      console.error('Profile update failed:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      setLoading(true);
-      setUser(null);
-      localStorage.removeItem('user');
-      navigate('/hostel-owner/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-      throw error;
-    } finally {
-      setLoading(false);
+  // Mock register function
+  const register = async (userData: Partial<User>, password: string) => {
+    // In a real app, this would call an API
+    if (userData.email && password) {
+      setUser({ ...mockUser, ...userData });
+    } else {
+      throw new Error('Invalid user data');
     }
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      login, 
-      signup, 
-      loginWithGoogle, 
-      logout,
-      updateProfile 
-    }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, loginBroker, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

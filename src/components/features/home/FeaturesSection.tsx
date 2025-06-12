@@ -3,72 +3,50 @@ import { Building, Search, Users, Star, Clock, Shield, Wifi, Lock, Heart, Sparkl
 
 const features = [
   {
-    icon: <Building className="h-8 w-8" />,
+    icon: <Building className="h-6 w-6" />,
     title: 'Extensive Hostel Options',
     description: 'Browse through a wide range of hostels across all major universities in Uganda.',
-    color: 'from-blue-500 to-blue-600',
+    bgColor: 'bg-blue-600',
   },
   {
-    icon: <Search className="h-8 w-8" />,
+    icon: <Search className="h-6 w-6" />,
     title: 'Advanced Filtering',
     description: 'Find your perfect accommodation with our comprehensive search and filtering options.',
-    color: 'from-purple-500 to-purple-600',
+    bgColor: 'bg-purple-600',
   },
   {
-    icon: <Users className="h-8 w-8" />,
+    icon: <Users className="h-6 w-6" />,
     title: 'Connect with Brokers',
     description: 'Get personalized assistance from our network of verified hostel brokers.',
-    color: 'from-pink-500 to-pink-600',
+    bgColor: 'bg-rose-600',
   },
   {
-    icon: <Star className="h-8 w-8" />,
+    icon: <Star className="h-6 w-6" />,
     title: 'Verified Reviews',
     description: 'Read authentic reviews from fellow students who have lived in the hostels.',
-    color: 'from-yellow-500 to-yellow-600',
+    bgColor: 'bg-amber-500',
   },
   {
-    icon: <Clock className="h-8 w-8" />,
+    icon: <Clock className="h-6 w-6" />,
     title: 'Quick Booking',
     description: 'Secure your accommodation in minutes with our streamlined booking process.',
-    color: 'from-green-500 to-green-600',
+    bgColor: 'bg-emerald-500',
   },
   {
-    icon: <Shield className="h-8 w-8" />,
+    icon: <Shield className="h-6 w-6" />,
     title: 'Secure Transactions',
     description: 'Book with confidence knowing that your payments and personal data are protected.',
-    color: 'from-red-500 to-red-600',
-  },
-];
-
-const additionalFeatures = [
-  {
-    icon: <Wifi className="h-6 w-6" />,
-    text: 'High-Speed Internet',
-  },
-  {
-    icon: <Lock className="h-6 w-6" />,
-    text: '24/7 Security',
-  },
-  {
-    icon: <Heart className="h-6 w-6" />,
-    text: 'Student-Friendly',
-  },
-  {
-    icon: <Sparkles className="h-6 w-6" />,
-    text: 'Modern Amenities',
+    bgColor: 'bg-red-500',
   },
 ];
 
 const FeaturesSection = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
-      
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.h2 
-            className="text-4xl md:text-5xl font-display font-bold mb-6 bg-gradient-to-r from-primary-900 to-primary-700 bg-clip-text text-transparent"
+            className="text-3xl md:text-4xl font-display font-bold mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -91,49 +69,42 @@ const FeaturesSection = () => {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="group relative bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300"
+              className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={{ y: -5 }}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}></div>
-              <div className={`p-4 bg-gradient-to-br ${feature.color} rounded-xl inline-flex mb-6 transform transition-transform duration-300 group-hover:rotate-6`}>
-                <div className="text-white">{feature.icon}</div>
+              <div className={`p-3 text-white rounded-xl inline-flex mb-4 ${feature.bgColor}`}>
+                {feature.icon}
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">{feature.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+              <p className="text-gray-600">{feature.description}</p>
             </motion.div>
           ))}
         </div>
-
-        {/* Additional Features */}
-        <motion.div 
-          className="bg-gradient-to-r from-primary-900 to-primary-800 rounded-2xl p-8 md:p-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {additionalFeatures.map((feature, index) => (
-              <motion.div
-                key={index}
-                className="flex flex-col items-center text-center"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <div className="p-3 bg-white/10 rounded-full mb-4">
-                  <div className="text-white">{feature.icon}</div>
-                </div>
-                <span className="text-white font-medium">{feature.text}</span>
-              </motion.div>
-            ))}
+      </div>
+      {/* Bottom Features Section */}
+      <div className="bg-primary-900 py-12 mt-16 mx-auto max-w-7xl rounded-xl">
+        <div className="px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-white text-center">
+          <div className="flex flex-col items-center">
+            <Wifi className="h-8 w-8 mb-3" />
+            <p className="text-lg font-medium">High-Speed Internet</p>
           </div>
-        </motion.div>
+          <div className="flex flex-col items-center">
+            <Lock className="h-8 w-8 mb-3" />
+            <p className="text-lg font-medium">24/7 Security</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <Heart className="h-8 w-8 mb-3" />
+            <p className="text-lg font-medium">Student-Friendly</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <Sparkles className="h-8 w-8 mb-3" />
+            <p className="text-lg font-medium">Modern Amenities</p>
+          </div>
+        </div>
       </div>
     </section>
   );

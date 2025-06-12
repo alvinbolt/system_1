@@ -12,6 +12,22 @@ const HostelCard = ({ hostel }: HostelCardProps) => {
   // Get room availability stats
   const availableRooms = hostel.rooms.filter(room => room.available).length;
   const totalRooms = hostel.rooms.length;
+  
+  // Get the cheapest room price
+  const cheapestRoom = hostel.rooms.reduce(
+    (min, room) => (room.price < min ? room.price : min),
+    hostel.rooms[0]?.price || 0
+  );
+
+  // Format price in UGX
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-UG', {
+      style: 'currency',
+      currency: 'UGX',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
 
   return (
     <Card interactive className="h-full flex flex-col">
@@ -64,7 +80,11 @@ const HostelCard = ({ hostel }: HostelCardProps) => {
         </div>
         
         <div className="space-y-3">
-          <div className="flex justify-end">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm text-gray-600">From</p>
+              <p className="text-lg font-bold text-primary-900">{formatPrice(cheapestRoom)}</p>
+            </div>
             <div className="bg-primary-900 text-white text-sm rounded-full px-3 py-1">
               {hostel.university.split(' ')[0]}
             </div>

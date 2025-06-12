@@ -1,80 +1,51 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './components/auth/ProtectedRoute';
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import SplashScreen from './components/common/SplashScreen';
 import Home from './pages/Home';
-import HostelOwnerPortal from './pages/HostelOwnerPortal';
-import HostelOwnerDashboard from './pages/HostelOwnerDashboard';
-import TestPortal from './pages/TestPortal';
-import SplashScreen from './components/features/splash/SplashScreen';
-import { useState, useEffect } from 'react';
+import HostelsPage from './pages/HostelsPage';
+import HostelDetailPage from './pages/HostelDetailPage';
+import SignupPage from './pages/SignupPage';
+import Dashboard from './pages/Dashboard';
+import BrokerLoginPage from './pages/BrokerLoginPage';
+import OwnerLoginPage from './pages/OwnerLoginPage';
+import OwnerSignupPage from './pages/OwnerSignupPage';
+import HostelOwnerDashboardPage from './pages/HostelOwnerDashboardPage';
+import HostelBrokerDashboardPage from './pages/HostelBrokerDashboardPage';
+import Universities from './pages/Universities';
+import { AuthProvider } from './contexts/AuthContext';
+import { HostelProvider } from './contexts/HostelContext';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 4500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (showSplash) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
-  }
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
 
   return (
-        <Router>
-      <AuthProvider>
-          <Routes>
-          {/* Public Routes */}
-            <Route path="/" element={<Home />} />
-          <Route path="/test" element={<TestPortal />} />
-          
-          {/* Hostel Owner Routes */}
-          <Route path="/hostel-owner" element={<Navigate to="/hostel-owner/login" replace />} />
-          <Route path="/hostel-owner/login" element={<HostelOwnerPortal />} />
-          <Route path="/hostel-owner/signup" element={<HostelOwnerPortal />} />
-
-          {/* Protected Hostel Owner Routes */}
-          <Route
-            path="/hostel-owner/dashboard"
-            element={
-              <ProtectedRoute requiredRole="hostel_owner">
-                <HostelOwnerDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/hostel-owner/hostels"
-            element={
-              <ProtectedRoute requiredRole="hostel_owner">
-                <HostelOwnerDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/hostel-owner/bookings"
-            element={
-              <ProtectedRoute requiredRole="hostel_owner">
-                <HostelOwnerDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/hostel-owner/settings"
-            element={
-              <ProtectedRoute requiredRole="hostel_owner">
-                <HostelOwnerDashboard />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Catch all route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-      </AuthProvider>
-        </Router>
+    <AuthProvider>
+      <HostelProvider>
+        {showSplash ? (
+          <SplashScreen onComplete={handleSplashComplete} />
+        ) : (
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/hostels" element={<HostelsPage />} />
+              <Route path="/hostels/:id" element={<HostelDetailPage />} />
+              <Route path="/universities" element={<Universities />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/hostel-owner/login" element={<OwnerLoginPage />} />
+              <Route path="/hostel-owner/signup" element={<OwnerSignupPage />} />
+              <Route path="/hostel-owner" element={<HostelOwnerDashboardPage />} />
+              <Route path="/hostel-broker/login" element={<BrokerLoginPage />} />
+              <Route path="/hostel-broker" element={<HostelBrokerDashboardPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+          </Router>
+        )}
+      </HostelProvider>
+    </AuthProvider>
   );
 }
 

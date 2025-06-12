@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserPlus, Mail, Lock, User, Phone, Building, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { UserPlus, Mail, Lock, User, Phone, School, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../../contexts/AuthContext';
 import Button from '../../ui/Button';
+import { universities } from '../../../data/mockData';
 
 const SignupForm = () => {
   const [step, setStep] = useState(1);
@@ -11,15 +12,24 @@ const SignupForm = () => {
     name: '',
     email: '',
     phone: '',
+    university: '',
     password: '',
     confirmPassword: '',
-    role: 'owner' as 'owner' | 'broker'
+    role: 'student' as 'student' | 'owner' | 'broker'
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Set role based on the current route
+  useEffect(() => {
+    if (location.pathname === '/hostel-owner/signup') {
+      setFormData(prev => ({ ...prev, role: 'owner' }));
+    }
+  }, [location]);
 
   const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -43,6 +53,7 @@ const SignupForm = () => {
     
     if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
     if (!formData.role) newErrors.role = 'Role is required';
+    if (formData.role === 'student' && !formData.university) newErrors.university = 'University is required';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -83,6 +94,7 @@ const SignupForm = () => {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
+          university: formData.university,
           role: formData.role
         }, 
         formData.password
@@ -106,8 +118,14 @@ const SignupForm = () => {
         <div className="inline-flex items-center justify-center h-16 w-16 bg-primary-50 text-primary-900 rounded-full mb-4">
           <UserPlus className="h-8 w-8" />
         </div>
-        <h2 className="text-2xl font-display font-bold">Create Hostel Owner Account</h2>
-        <p className="text-gray-600 mt-2">Join HostelConnect to list your properties</p>
+        <h2 className="text-2xl font-display font-bold">
+          {location.pathname === '/hostel-owner/signup' ? 'Create Owner Account' : 'Create Account'}
+        </h2>
+        <p className="text-gray-600 mt-2">
+          {location.pathname === '/hostel-owner/signup' 
+            ? 'Join HostelConnect as a hostel owner' 
+            : 'Join HostelConnect to find your perfect accommodation'}
+        </p>
       </div>
       
       {errors.submit && (
@@ -203,27 +221,68 @@ const SignupForm = () => {
               </div>
             </div>
             
-            <div className="mb-4">
-              <label htmlFor="role" className="block text-gray-700 text-sm font-medium mb-2">
-                I am a
-              </label>
-              <select
-                id="role"
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent"
-                value={formData.role}
-                onChange={(e) => updateFormData('role', e.target.value as 'owner' | 'broker')}
-              >
-                <option value="owner">Hostel Owner</option>
-                <option value="broker">Hostel Broker</option>
-              </select>
-              {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
-            </div>
+            {location.pathname !== '/hostel-owner/signup' && (
+              <div className="mb-4">
+                <label htmlFor="role" className="block text-gray-700 text-sm font-medium mb-2">
+                  I am a
+                </label>
+                <select
+                  id="role"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent"
+                  value={formData.role}
+                  onChange={(e) => updateFormData('role', e.target.value as 'student' | 'owner' | 'broker')}
+                >
+                  <option value="student">Student</option>
+                  <option value="owner">Hostel Owner</option>
+                  <option value="broker">Hostel Broker</option>
+                </select>
+                {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
+              </div>
+            )}
+            
+            {formData.role === 'student' && (
+              <div className="mb-6">
+                <label htmlFor="university" className="block text-gray-700 text-sm font-medium mb-2">
+                  University
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <School className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <select
+                    id="university"
+                    className="pl-10 w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent"
+                    value={formData.university}
+                    onChange={(e) => updateFormData('university', e.target.value)}
+                  >
+                    <option value="">Select your university</option>
+                    {universities.map((uni) => (
+                      <option key={uni.id} value={uni.name}>
+                        {uni.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.university && <p className="text-red-500 text-xs mt-1">{errors.university}</p>}
+                </div>
+              </div>
+            )}
+            
+            <Button
+              variant="primary"
+              fullWidth
+              size="lg"
+              icon={<ArrowRight className="h-5 w-5" />}
+              iconPosition="right"
+              onClick={handleNextStep}
+            >
+              Continue
+            </Button>
           </>
         )}
         
         {step === 2 && (
           <>
-            {/* Step 2: Security */}
+            {/* Step 2: Security Information */}
             <div className="mb-4">
               <label htmlFor="password" className="block text-gray-700 text-sm font-medium mb-2">
                 Password
@@ -236,7 +295,7 @@ const SignupForm = () => {
                   id="password"
                   type="password"
                   className="pl-10 w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent"
-                  placeholder="••••••••"
+                  placeholder="Create a strong password"
                   value={formData.password}
                   onChange={(e) => updateFormData('password', e.target.value)}
                 />
@@ -256,35 +315,47 @@ const SignupForm = () => {
                   id="confirmPassword"
                   type="password"
                   className="pl-10 w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent"
-                  placeholder="••••••••"
+                  placeholder="Confirm your password"
                   value={formData.confirmPassword}
                   onChange={(e) => updateFormData('confirmPassword', e.target.value)}
                 />
                 {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
               </div>
             </div>
+            
+            <div className="flex space-x-3">
+              <Button
+                variant="outline"
+                fullWidth
+                size="lg"
+                onClick={handlePrevStep}
+              >
+                Back
+              </Button>
+              
+              <Button
+                variant="primary"
+                fullWidth
+                size="lg"
+                icon={<ArrowRight className="h-5 w-5" />}
+                iconPosition="right"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Creating account...' : 'Create Account'}
+              </Button>
+            </div>
           </>
         )}
         
-        <div className="flex justify-between">
-          {step === 2 && (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handlePrevStep}
-            >
-              Back
-            </Button>
-          )}
-          <Button
-            type="submit"
-            variant="primary"
-            fullWidth={step === 1}
-            disabled={isLoading}
+        <p className="text-center text-gray-600 mt-6">
+          Already have an account?{' '}
+          <Link 
+            to={location.pathname === '/hostel-owner/signup' ? '/hostel-owner/login' : '/login'} 
+            className="text-primary-900 hover:underline font-medium"
           >
-            {step === 1 ? 'Next' : isLoading ? 'Creating Account...' : 'Create Account'}
-          </Button>
-        </div>
+            Sign in
+          </Link>
+        </p>
       </form>
     </motion.div>
   );
