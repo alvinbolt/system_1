@@ -30,33 +30,33 @@ const HeroSection = () => {
       </div>
       
       {/* Content */}
-      <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 py-20">
+      <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 pt-20 sm:pt-24 pb-16 sm:pb-20">
         <motion.div
           className="max-w-3xl mx-auto text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-4 sm:mb-6 leading-tight">
             Find Your Perfect Student Accommodation
           </h1>
-          <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-12 max-w-2xl mx-auto px-2">
             Discover and book verified hostels near your university. Safe, comfortable, and student-friendly accommodations across Uganda.
           </p>
           
           <motion.div 
-            className="bg-white p-4 rounded-2xl shadow-xl max-w-3xl mx-auto"
+            className="bg-white p-3 sm:p-4 rounded-2xl shadow-xl max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <div className="flex-grow">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
                   <input
                     type="text"
-                    className="pl-12 pr-4 py-4 w-full rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-primary-900 transition-all"
+                    className="pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 w-full rounded-xl text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-primary-900 transition-all"
                     placeholder="Search for hostels..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -65,7 +65,7 @@ const HeroSection = () => {
               </div>
               
               <select
-                className="p-4 rounded-xl border border-gray-200 text-lg focus:outline-none focus:ring-2 focus:ring-primary-900 bg-white"
+                className="p-3 sm:p-4 rounded-xl border border-gray-200 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-primary-900 bg-white"
                 value={selectedUniversity}
                 onChange={(e) => setSelectedUniversity(e.target.value)}
               >
@@ -79,15 +79,15 @@ const HeroSection = () => {
               
               <button
                 type="submit"
-                className="bg-primary-900 hover:bg-primary-800 text-white font-medium py-4 px-8 rounded-xl transition-colors duration-300 flex items-center justify-center text-lg"
+                className="bg-primary-900 hover:bg-primary-800 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-xl transition-colors duration-300 flex items-center justify-center text-base sm:text-lg whitespace-nowrap"
               >
-                Search <ArrowRight className="ml-2 h-5 w-5" />
+                Search <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </form>
           </motion.div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-12 sm:mt-16 max-w-4xl mx-auto px-2">
             {[
               { label: 'Hostels', value: '500+' },
               { label: 'Universities', value: '10+' },
@@ -101,8 +101,8 @@ const HeroSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
               >
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.value}</div>
-                <div className="text-white/80">{stat.label}</div>
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">{stat.value}</div>
+                <div className="text-sm sm:text-base text-white/80">{stat.label}</div>
               </motion.div>
             ))}
           </div>
