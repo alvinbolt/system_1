@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Building } from 'lucide-react';
 
 type SplashScreenProps = {
   onComplete: () => void;
@@ -8,6 +7,8 @@ type SplashScreenProps = {
 
 const SplashScreen = ({ onComplete }: SplashScreenProps) => {
   const [showSplash, setShowSplash] = useState(true);
+  const text = "HostelConnect";
+  const letters = Array.from(text);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -24,36 +25,31 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
     exit: { opacity: 0 },
   };
 
-  const logoVariants = {
-    hidden: { scale: 0, rotate: -180 },
-    visible: { 
-      scale: 1, 
-      rotate: 0,
-      transition: { 
-        type: "spring", 
-        stiffness: 260, 
-        damping: 20, 
-        delay: 0.5 
-      }
-    },
-    exit: { 
-      scale: 1.5, 
+  const letterVariants = {
+    hidden: { 
       opacity: 0,
-      transition: { duration: 0.8, ease: "easeInOut" }
-    }
-  };
-
-  // Water-like ripple effect elements
-  const rippleVariants = {
-    hidden: { scale: 0, opacity: 0 },
-    visible: (custom: number) => ({
-      scale: 1,
-      opacity: [0, 0.5, 0],
-      transition: { 
-        delay: custom * 0.3 + 1,
-        duration: 1.5, 
-        ease: "easeInOut",
-        times: [0, 0.2, 1]
+      y: 50,
+      rotateX: -90
+    },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      rotateX: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.5,
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }),
+    exit: (i: number) => ({
+      opacity: 0,
+      y: -50,
+      rotateX: 90,
+      transition: {
+        delay: i * 0.05,
+        duration: 0.3
       }
     })
   };
@@ -69,51 +65,39 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
           exit="exit"
           transition={{ duration: 0.5 }}
         >
-          {/* Logo with water-like portal effect */}
-          <div className="relative">
-            {/* Ripple circles */}
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="absolute inset-0 rounded-full border-2 border-white/30"
-                custom={i}
-                variants={rippleVariants}
-                initial="hidden"
-                animate="visible"
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                }}
-              />
-            ))}
+          <div className="text-center">
+            {/* Animated Text */}
+            <div className="flex justify-center mb-4">
+              {letters.map((letter, i) => (
+                <motion.span
+                  key={i}
+                  custom={i}
+                  variants={letterVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="inline-block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-white"
+                  style={{
+                    perspective: "1000px",
+                    transformStyle: "preserve-3d"
+                  }}
+                >
+                  {letter === " " ? "\u00A0" : letter}
+                </motion.span>
+              ))}
+            </div>
             
-            {/* Logo */}
-            <motion.div
-              className="relative z-10 bg-white rounded-full p-6 shadow-lg"
-              variants={logoVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
+            {/* Tagline */}
+            <motion.p
+              className="text-white/80 text-lg sm:text-xl md:text-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.5 }}
+              exit={{ opacity: 0, y: -20 }}
             >
-              <Building className="h-16 w-16 text-primary-900" />
-            </motion.div>
-          </div>
-          
-          {/* Text animation */}
-          <motion.div
-            className="absolute mt-32 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.5 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <h1 className="text-white text-3xl font-display font-bold tracking-wider">
-              HostelConnect
-            </h1>
-            <p className="text-white/80 mt-2">
               Find your perfect student accommodation
-            </p>
-          </motion.div>
+            </motion.p>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

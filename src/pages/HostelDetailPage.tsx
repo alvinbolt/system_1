@@ -76,7 +76,7 @@ const HostelDetailPage = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-20 sm:pt-24 md:pt-28 pb-8">
         {/* Back Button */}
         <button 
           onClick={() => navigate(-1)} 

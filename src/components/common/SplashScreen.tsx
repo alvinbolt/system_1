@@ -49,35 +49,14 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           animate="visible"
           exit="exit"
         >
-          {/* Logo with Circular Waves */}
+          {/* Logo */}
           <motion.div
             className="relative mb-8"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <img src="/images/logo2.png" alt="HostelConnect Logo" className="h-48 w-48 object-contain relative z-10" />
-            {/* Circular Wave Effect */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute border-4 border-primary-600 border-opacity-30 rounded-full"
-                  initial={{ scale: 0, opacity: 1 }}
-                  animate={{
-                    scale: [0, 1, 1.2],
-                    opacity: [1, 0.5, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.5,
-                    ease: "easeOut",
-                  }}
-                  style={{ width: `${100 + i * 50}%`, height: `${100 + i * 50}%` }}
-                />
-              ))}
-            </div>
+            <img src="/images/logo1.png" alt="HostelConnect Logo" className="h-48 w-48 object-contain" />
           </motion.div>
 
           {/* Animated H1 Text */}
