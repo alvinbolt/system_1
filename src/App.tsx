@@ -15,6 +15,22 @@ import Universities from './pages/Universities';
 import { AuthProvider } from './contexts/AuthContext';
 import { HostelProvider } from './contexts/HostelContext';
 
+// Import dashboard components
+import OwnerManagement from './components/features/dashboard/hostelBroker/OwnerManagement';
+import ReportGeneration from './components/features/dashboard/hostelBroker/ReportGeneration';
+import RoomManagement from './components/features/dashboard/hostelOwner/RoomManagement';
+import ReviewManagement from './components/features/dashboard/hostelOwner/ReviewManagement';
+import BookingManagement from './components/features/dashboard/hostelOwner/BookingManagement';
+import MessagingSystem from './components/features/dashboard/common/MessagingSystem';
+import AnalyticsDashboard from './components/features/dashboard/common/AnalyticsDashboard';
+import HostelManagement from './components/features/dashboard/hostelOwner/HostelManagement';
+import OwnerSettings from './components/features/dashboard/hostelOwner/OwnerSettings';
+
+// Placeholder components for Broker Dashboard
+import BrokerHostels from './components/features/dashboard/hostelBroker/BrokerHostels';
+import BrokerModeration from './components/features/dashboard/hostelBroker/BrokerModeration';
+import BrokerSettings from './components/features/dashboard/hostelBroker/BrokerSettings';
+
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
@@ -30,17 +46,46 @@ function App() {
         ) : (
           <Router>
             <Routes>
+              {/* Public routes */}
               <Route path="/" element={<Home />} />
               <Route path="/hostels" element={<HostelsPage />} />
               <Route path="/hostels/:id" element={<HostelDetailPage />} />
               <Route path="/universities" element={<Universities />} />
               <Route path="/signup" element={<SignupPage />} />
+              
+              {/* Auth routes */}
               <Route path="/hostel-owner/login" element={<OwnerLoginPage />} />
               <Route path="/hostel-owner/signup" element={<OwnerSignupPage />} />
-              <Route path="/hostel-owner" element={<HostelOwnerDashboardPage />} />
               <Route path="/hostel-broker/login" element={<BrokerLoginPage />} />
-              <Route path="/hostel-broker" element={<HostelBrokerDashboardPage />} />
+              
+              {/* Dashboard routes - Parent routes for nested dashboards */}
               <Route path="/dashboard" element={<Dashboard />} />
+              
+              {/* Hostel Owner Dashboard Routes (Nested) */}
+              <Route path="/hostel-owner" element={<HostelOwnerDashboardPage />}>
+                {/* The default content for /hostel-owner will be handled by OwnerDashboard's children prop fallback */}
+                <Route path="hostels" element={<HostelManagement />} />
+                <Route path="rooms" element={<RoomManagement />} />
+                <Route path="bookings" element={<BookingManagement />} />
+                <Route path="reviews" element={<ReviewManagement />} />
+                <Route path="messages" element={<MessagingSystem userRole="owner" />} />
+                <Route path="analytics" element={<AnalyticsDashboard userRole="owner" />} />
+                <Route path="settings" element={<OwnerSettings />} />
+                {/* Add other owner-specific routes here as needed */}
+              </Route>
+              
+              {/* Hostel Broker Dashboard Routes (Nested) */}
+              <Route path="/hostel-broker" element={<HostelBrokerDashboardPage />}>
+                {/* The default content for /hostel-broker will be handled by BrokerDashboard's children prop fallback */}
+                <Route path="owners" element={<OwnerManagement />} />
+                <Route path="hostels" element={<BrokerHostels />} />
+                <Route path="moderation" element={<BrokerModeration />} />
+                <Route path="reports" element={<ReportGeneration />} />
+                <Route path="messages" element={<MessagingSystem userRole="broker" />} />
+                <Route path="analytics" element={<AnalyticsDashboard userRole="broker" />} />
+                <Route path="settings" element={<BrokerSettings />} />
+                {/* Add other broker-specific routes here as needed */}
+              </Route>
             </Routes>
           </Router>
         )}

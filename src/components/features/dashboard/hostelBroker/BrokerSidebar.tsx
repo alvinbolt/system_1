@@ -1,12 +1,17 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Users, Building, Settings } from 'lucide-react';
+import { Home, Users, Building, Settings, FileText, MessageSquare, Shield, BarChart } from 'lucide-react';
 
 const BrokerSidebar = () => {
   const menuItems = [
-    { name: 'Overview', to: '/dashboard/broker', icon: <Home className="w-5 h-5" /> },
-    { name: 'Clients', to: '/dashboard/broker/clients', icon: <Users className="w-5 h-5" /> },
-    { name: 'Partner Hostels', to: '/dashboard/broker/partners', icon: <Building className="w-5 h-5" /> },
-    { name: 'Settings', to: '/dashboard/broker/settings', icon: <Settings className="w-5 h-5" /> },
+    { name: 'Overview', to: '/hostel-broker', icon: <Home className="w-5 h-5" /> },
+    { name: 'Hostel Owners', to: '/hostel-broker/owners', icon: <Users className="w-5 h-5" /> },
+    { name: 'Hostels', to: '/hostel-broker/hostels', icon: <Building className="w-5 h-5" /> },
+    { name: 'Bookings', to: '/hostel-broker/bookings', icon: <MessageSquare className="w-5 h-5" /> },
+    { name: 'Moderation', to: '/hostel-broker/moderation', icon: <Shield className="w-5 h-5" /> },
+    { name: 'Reports', to: '/hostel-broker/reports', icon: <FileText className="w-5 h-5" /> },
+    { name: 'Messages', to: '/hostel-broker/messages', icon: <MessageSquare className="w-5 h-5" /> },
+    { name: 'Analytics', to: '/hostel-broker/analytics', icon: <BarChart className="w-5 h-5" /> },
+    { name: 'Settings', to: '/hostel-broker/settings', icon: <Settings className="w-5 h-5" /> },
   ];
 
   return (

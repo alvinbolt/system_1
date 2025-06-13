@@ -1,23 +1,22 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet, Navigate } from 'react-router-dom';
 import OwnerDashboard from '../components/features/dashboard/hostelOwner/OwnerDashboard';
 import { useAuth } from '../contexts/AuthContext';
 
 const HostelOwnerDashboardPage = () => {
   const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'owner') {
-      navigate('/hostel-owner/login');
-    }
-  }, [isAuthenticated, user, navigate]);
-
+  
+  // If not authenticated or not an owner, redirect to owner login
   if (!isAuthenticated || user?.role !== 'owner') {
-    return null; // or a loading spinner
+    return <Navigate to="/hostel-owner/login" replace />;
   }
 
-  return <OwnerDashboard />;
+  // If authenticated and owner, render the dashboard
+  return (
+    <OwnerDashboard>
+      <Outlet />
+    </OwnerDashboard>
+  );
 };
 
 export default HostelOwnerDashboardPage;
