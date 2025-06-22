@@ -1,20 +1,25 @@
-import { ReactNode, useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 type DashboardLayoutProps = {
   children: ReactNode;
-  sidebar: ReactNode;
+  sidebar: ReactElement; // Changed to ReactElement to allow cloning
 };
 
 const DashboardLayout = ({ children, sidebar }: DashboardLayoutProps) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
+  // Clone the sidebar to inject the onLinkClick prop
+  const sidebarWithClickHandler = React.cloneElement(sidebar, {
+    onLinkClick: () => setIsMobileSidebarOpen(false),
+  });
+
   return (
     <div className="min-h-screen flex bg-gray-50">
       {/* --- Desktop Sidebar (Visible on lg screens and up) --- */}
       <aside className="w-64 flex-shrink-0 bg-white shadow-md hidden lg:flex lg:flex-col">
-        {sidebar}
+        {sidebarWithClickHandler}
       </aside>
 
       {/* --- Mobile Sidebar (Toggles on small screens) --- */}
@@ -40,7 +45,7 @@ const DashboardLayout = ({ children, sidebar }: DashboardLayoutProps) => {
               className="fixed top-0 left-0 w-80 max-w-[90vw] h-full bg-white z-50 lg:hidden flex flex-col"
             >
               <div className="flex-1 overflow-y-auto">
-                {sidebar}
+                {sidebarWithClickHandler}
               </div>
             </motion.div>
           </>

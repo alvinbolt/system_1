@@ -1,6 +1,6 @@
 import DashboardLayout from '../../../layout/DashboardLayout';
 import OwnerSidebar from './OwnerSidebar';
-import { Star, TrendingUp, TrendingDown, Users, Building, Bed, DollarSign, LogOut, Bell, Search } from 'lucide-react';
+import { Star, TrendingUp, TrendingDown, Users, Building, Bed, DollarSign, Bell, Search } from 'lucide-react';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,13 +9,8 @@ interface OwnerDashboardProps {
 }
 
 const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ children }) => {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
 
   return (
     <DashboardLayout sidebar={<OwnerSidebar />}>
@@ -48,15 +43,6 @@ const OwnerDashboard: React.FC<OwnerDashboardProps> = ({ children }) => {
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     3
                   </span>
-                </button>
-                
-                {/* Logout Button */}
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Logout</span>
                 </button>
               </div>
             </div>

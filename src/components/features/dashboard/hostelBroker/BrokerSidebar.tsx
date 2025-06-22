@@ -1,15 +1,18 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Home, Users, Building, Settings, FileText, MessageSquare, Shield, BarChart, LogOut } from 'lucide-react';
 import { useAuth } from '../../../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
-const BrokerSidebar = () => {
+interface BrokerSidebarProps {
+  onLinkClick?: () => void;
+}
+
+const BrokerSidebar: React.FC<BrokerSidebarProps> = ({ onLinkClick }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/', { replace: true });
   };
 
   const menuItems = [
@@ -28,7 +31,7 @@ const BrokerSidebar = () => {
     <div className="flex flex-col h-full bg-white">
       {/* Logo/Brand Section */}
       <div className="p-4 border-b border-gray-200 flex items-center justify-center">
-        <img src="/images/logo2.png" alt="HostelConnect Logo" className="h-12" />
+        <img src="/images/logo1.png" alt="HostelConnect Logo" className="h-12" />
       </div>
 
       {/* Navigation Menu */}
@@ -37,6 +40,7 @@ const BrokerSidebar = () => {
           <NavLink
             key={name}
             to={to}
+            onClick={onLinkClick}
             className={({ isActive }) =>
               `flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
                 isActive 

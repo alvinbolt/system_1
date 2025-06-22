@@ -1,15 +1,18 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Home, Building, Settings, Users, Bed, Star, MessageSquare, BarChart, LogOut } from 'lucide-react';
 import { useAuth } from '../../../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
-const OwnerSidebar = () => {
+interface OwnerSidebarProps {
+  onLinkClick?: () => void;
+}
+
+const OwnerSidebar: React.FC<OwnerSidebarProps> = ({ onLinkClick }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/', { replace: true });
   };
 
   const menuItems = [
@@ -36,6 +39,7 @@ const OwnerSidebar = () => {
           <NavLink
             key={name}
             to={to}
+            onClick={onLinkClick}
             className={({ isActive }) =>
               `flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
                 isActive 
