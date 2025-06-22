@@ -14,8 +14,42 @@ interface Review {
   ownerResponse?: string;
 }
 
+const mockReviews: Review[] = [
+  {
+    id: '1',
+    roomId: '101',
+    roomNumber: '101',
+    studentName: 'Alice Johnson',
+    rating: 5,
+    comment: 'Great room, very clean and comfortable!',
+    date: '2024-06-01',
+    status: 'pending',
+  },
+  {
+    id: '2',
+    roomId: '102',
+    roomNumber: '102',
+    studentName: 'Bob Smith',
+    rating: 4,
+    comment: 'Good value for money. Would recommend.',
+    date: '2024-06-02',
+    status: 'approved',
+    ownerResponse: 'Thank you for your feedback!'
+  },
+  {
+    id: '3',
+    roomId: '103',
+    roomNumber: '103',
+    studentName: 'Carol Lee',
+    rating: 2,
+    comment: 'Room was noisy at night.',
+    date: '2024-06-03',
+    status: 'reported',
+  },
+];
+
 const ReviewManagement: React.FC = () => {
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<Review[]>(mockReviews);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [responseText, setResponseText] = useState('');
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'reported'>('all');
@@ -46,10 +80,19 @@ const ReviewManagement: React.FC = () => {
     filter === 'all' ? true : review.status === filter
   );
 
+  const newReviewsCount = reviews.filter(r => r.status === 'pending').length;
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-900">Review Management</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+          Review Management
+          {newReviewsCount > 0 && (
+            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+              {newReviewsCount} New
+            </span>
+          )}
+        </h2>
         <div className="flex space-x-2">
           <select
             value={filter}

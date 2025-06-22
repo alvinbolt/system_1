@@ -59,10 +59,19 @@ const BookingManagement: React.FC = () => {
     }
   };
 
+  const newBookingsCount = bookings.filter(b => b.status === 'pending').length;
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-900">Booking Management</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+          Booking Management
+          {newBookingsCount > 0 && (
+            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+              {newBookingsCount} New
+            </span>
+          )}
+        </h2>
         <div className="flex space-x-4">
           <div className="flex space-x-2">
             <button
@@ -109,7 +118,7 @@ const BookingManagement: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="bg-white rounded-xl shadow-md p-6"
+              className={`bg-white rounded-xl shadow-md p-6 ${booking.status === 'pending' ? 'ring-2 ring-red-200' : ''}`}
             >
               <div className="flex justify-between items-start">
                 <div>

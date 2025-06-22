@@ -11,13 +11,21 @@ interface Room {
   images: string[];
   amenities: string[];
   description: string;
+  hostelId: string;
 }
+
+// Add mock hostels for selection
+const mockHostels = [
+  { id: '1', name: 'Sunrise Hostel' },
+  { id: '2', name: 'Green Valley' },
+];
 
 const RoomManagement: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isAddingRoom, setIsAddingRoom] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedHostelId, setSelectedHostelId] = useState<string>(mockHostels[0].id);
 
   const handleAddRoom = () => {
     setIsAddingRoom(true);
@@ -46,6 +54,7 @@ const RoomManagement: React.FC = () => {
         images: [],
         amenities: [],
         description: '',
+        hostelId: selectedHostelId,
         ...roomData
       };
       setRooms([...rooms, newRoom]);
@@ -54,13 +63,25 @@ const RoomManagement: React.FC = () => {
     setSelectedRoom(null);
   };
 
+  // Filter rooms by selected hostel
+  const filteredRooms = rooms.filter(room => (room as any).hostelId === selectedHostelId);
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-900">Room Management</h2>
+        <select
+          value={selectedHostelId}
+          onChange={e => setSelectedHostelId(e.target.value)}
+          className="ml-4 rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+        >
+          {mockHostels.map(h => (
+            <option key={h.id} value={h.id}>{h.name}</option>
+          ))}
+        </select>
         <button
           onClick={handleAddRoom}
-          className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+          className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 ml-4"
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Room
@@ -69,7 +90,7 @@ const RoomManagement: React.FC = () => {
 
       {/* Room List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {rooms.map(room => (
+        {filteredRooms.map(room => (
           <motion.div
             key={room.id}
             layout
@@ -104,6 +125,7 @@ const RoomManagement: React.FC = () => {
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-lg font-semibold text-gray-900">Room {room.number}</h3>
+                <span className="text-xs text-gray-500">Hostel: {mockHostels.find(h => h.id === (room as any).hostelId)?.name || 'N/A'}</span>
                 <div className="flex space-x-2">
                   <button
                     onClick={() => setSelectedRoom(room)}
@@ -164,7 +186,10 @@ const RoomManagement: React.FC = () => {
               
               <form onSubmit={(e) => {
                 e.preventDefault();
-                // TODO: Implement form submission
+                // Add hostelId to new room
+                handleSaveRoom({
+                  hostelId: selectedHostelId,
+                });
               }}>
                 <div className="space-y-4">
                   <div>

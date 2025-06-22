@@ -30,6 +30,72 @@ interface Conversation {
   avatar?: string;
 }
 
+const mockConversations: Conversation[] = [
+  {
+    id: 'c1',
+    participantId: 'b1',
+    participantName: 'Broker John',
+    participantRole: 'broker',
+    lastMessage: 'Please update your hostel info.',
+    lastMessageTime: '09:00',
+    unreadCount: 1,
+    avatar: '/images/logo2.png',
+  },
+  {
+    id: 'c2',
+    participantId: 'b2',
+    participantName: 'Broker Alice',
+    participantRole: 'broker',
+    lastMessage: 'Your documents are approved.',
+    lastMessageTime: '10:00',
+    unreadCount: 0,
+    avatar: '/images/logo1.png',
+  },
+];
+
+const mockMessages: { [conversationId: string]: Message[] } = {
+  c1: [
+    {
+      id: 'm1',
+      senderId: 'b1',
+      senderName: 'Broker John',
+      senderRole: 'broker',
+      content: 'Please update your hostel info.',
+      timestamp: '2024-06-01T09:00:00Z',
+      status: 'delivered',
+    },
+    {
+      id: 'm2',
+      senderId: 'current-user-id',
+      senderName: 'Current User',
+      senderRole: 'owner',
+      content: 'Thanks, I will do that.',
+      timestamp: '2024-06-01T09:01:00Z',
+      status: 'sent',
+    },
+  ],
+  c2: [
+    {
+      id: 'm1',
+      senderId: 'b2',
+      senderName: 'Broker Alice',
+      senderRole: 'broker',
+      content: 'Your documents are approved.',
+      timestamp: '2024-06-01T10:00:00Z',
+      status: 'delivered',
+    },
+    {
+      id: 'm2',
+      senderId: 'current-user-id',
+      senderName: 'Current User',
+      senderRole: 'owner',
+      content: 'Thank you!',
+      timestamp: '2024-06-01T10:01:00Z',
+      status: 'sent',
+    },
+  ],
+};
+
 const MessagingSystem: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRole }) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
@@ -47,7 +113,13 @@ const MessagingSystem: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRole 
   useEffect(() => {
     // Scroll to bottom when new messages arrive
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    // Add mock data for owner if empty
+    if (userRole === 'owner' && conversations.length === 0) {
+      setConversations(mockConversations);
+      setSelectedConversation(mockConversations[0]);
+      setMessages(mockMessages[mockConversations[0].id] || []);
+    }
+  }, [userRole, conversations.length]);
 
   const handleLogout = () => {
     logout();

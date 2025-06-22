@@ -31,7 +31,7 @@ const BrokerSidebar: React.FC<BrokerSidebarProps> = ({ onLinkClick }) => {
     <div className="flex flex-col h-full bg-white">
       {/* Logo/Brand Section */}
       <div className="p-4 border-b border-gray-200 flex items-center justify-center">
-        <img src="/images/logo1.png" alt="HostelConnect Logo" className="h-12" />
+        <img src="/images/logo2.png" alt="HostelConnect Logo" className="h-12" />
       </div>
 
       {/* Navigation Menu */}

@@ -30,6 +30,10 @@ import OwnerSettings from './components/features/dashboard/hostelOwner/OwnerSett
 import BrokerHostels from './components/features/dashboard/hostelBroker/BrokerHostels';
 import BrokerModeration from './components/features/dashboard/hostelBroker/BrokerModeration';
 import BrokerSettings from './components/features/dashboard/hostelBroker/BrokerSettings';
+import BrokerBookings from './components/features/dashboard/hostelBroker/BrokerBookings';
+import BrokerMessagingSystem from './components/features/dashboard/hostelBroker/MessagingSystem';
+
+import OwnerMessagingSystem from './components/features/dashboard/hostelOwner/MessagingSystem';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -68,7 +72,7 @@ function App() {
                 <Route path="rooms" element={<RoomManagement />} />
                 <Route path="bookings" element={<BookingManagement />} />
                 <Route path="reviews" element={<ReviewManagement />} />
-                <Route path="messages" element={<MessagingSystem userRole="owner" />} />
+                <Route path="messages" element={<OwnerMessagingSystem />} />
                 <Route path="analytics" element={<AnalyticsDashboard userRole="owner" />} />
                 <Route path="settings" element={<OwnerSettings />} />
                 {/* Add other owner-specific routes here as needed */}
@@ -79,9 +83,10 @@ function App() {
                 {/* The default content for /hostel-broker will be handled by BrokerDashboard's children prop fallback */}
                 <Route path="owners" element={<OwnerManagement />} />
                 <Route path="hostels" element={<BrokerHostels />} />
+                <Route path="bookings" element={<BrokerBookings />} />
                 <Route path="moderation" element={<BrokerModeration />} />
                 <Route path="reports" element={<ReportGeneration />} />
-                <Route path="messages" element={<MessagingSystem userRole="broker" />} />
+                <Route path="messages" element={<BrokerMessagingSystem />} />
                 <Route path="analytics" element={<AnalyticsDashboard userRole="broker" />} />
                 <Route path="settings" element={<BrokerSettings />} />
                 {/* Add other broker-specific routes here as needed */}
