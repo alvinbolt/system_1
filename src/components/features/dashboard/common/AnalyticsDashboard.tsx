@@ -14,7 +14,7 @@ import {
   Pie,
   Cell
 } from 'recharts';
-import { Calendar, TrendingUp, Users, Building, DollarSign, Star } from 'lucide-react';
+import { Calendar, TrendingUp, Users, Building, DollarSign, Star, Filter } from 'lucide-react';
 
 interface AnalyticsData {
   bookings: {
@@ -110,30 +110,39 @@ const AnalyticsDashboard: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRo
   };
 
   return (
-    <div className="p-6">
-      {/* <h1 className="text-4xl font-bold text-red-600 mb-8">ANALYTICS DASHBOARD IS RENDERING!</h1> */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-900">Analytics Dashboard</h2>
-        <div className="flex items-center space-x-2">
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value as typeof timeRange)}
-            className="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-          >
-            <option value="week">Last Week</option>
-            <option value="month">Last Month</option>
-            <option value="year">Last Year</option>
-          </select>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Analytics Dashboard</h2>
+            <p className="text-gray-600 mt-1">Track your performance and insights</p>
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value as typeof timeRange)}
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white"
+              >
+                <option value="week">Last Week</option>
+                <option value="month">Last Month</option>
+                <option value="year">Last Year</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-md p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-500">Total Bookings</p>
-              <p className="text-2xl font-semibold text-gray-900">{mockData.bookings.total}</p>
+              <p className="text-sm font-medium text-gray-600">Total Bookings</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">{mockData.bookings.total}</p>
             </div>
             <div className="p-3 bg-primary-50 rounded-lg">
               <Calendar className="w-6 h-6 text-primary-600" />
@@ -147,12 +156,12 @@ const AnalyticsDashboard: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRo
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-500">Total Revenue</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                UGX {mockData.revenue.total.toLocaleString()}
+              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                UGX {(mockData.revenue.total / 1000000).toFixed(1)}M
               </p>
             </div>
             <div className="p-3 bg-green-50 rounded-lg">
@@ -167,11 +176,11 @@ const AnalyticsDashboard: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRo
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-500">Occupancy Rate</p>
-              <p className="text-2xl font-semibold text-gray-900">{mockData.occupancy.rate}%</p>
+              <p className="text-sm font-medium text-gray-600">Occupancy Rate</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">{mockData.occupancy.rate}%</p>
             </div>
             <div className="p-3 bg-blue-50 rounded-lg">
               <Building className="w-6 h-6 text-blue-600" />
@@ -185,11 +194,11 @@ const AnalyticsDashboard: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRo
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-500">Average Rating</p>
-              <p className="text-2xl font-semibold text-gray-900">{mockData.reviews.average}</p>
+              <p className="text-sm font-medium text-gray-600">Average Rating</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">{mockData.reviews.average}</p>
             </div>
             <div className="p-3 bg-yellow-50 rounded-lg">
               <Star className="w-6 h-6 text-yellow-600" />
@@ -203,138 +212,80 @@ const AnalyticsDashboard: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRo
         </div>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Bookings Over Time */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Bookings Over Time</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%" key={`bookings-over-time-${userRole}`}>
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Bookings Trend */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Bookings Trend</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart data={mockData.bookings.byMonth}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="count"
-                  stroke="#0088FE"
-                  strokeWidth={2}
-                  name="Bookings"
-                />
+                <Line type="monotone" dataKey="count" stroke="#3B82F6" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Revenue by Room Type */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Revenue by Room Type</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%" key={`revenue-by-room-type-${userRole}`}>
-              <PieChart>
-                <Pie
-                  data={mockData.revenue.byRoomType}
-                  dataKey="amount"
-                  nameKey="type"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  label
-                >
-                  {mockData.revenue.byRoomType.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Occupancy Rate */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Occupancy Rate Trend</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%" key={`occupancy-rate-${userRole}`}>
-              <LineChart data={mockData.occupancy.byMonth}>
+        {/* Revenue Trend */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Revenue Trend</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={mockData.revenue.byMonth}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="rate"
-                  stroke="#00C49F"
-                  strokeWidth={2}
-                  name="Occupancy Rate (%)"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Review Distribution */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Review Distribution</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%" key={`review-distribution-${userRole}`}>
-              <BarChart data={mockData.reviews.distribution}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="rating" />
                 <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#FFBB28" name="Number of Reviews" />
+                <Tooltip formatter={(value) => [`UGX ${(Number(value) / 1000).toFixed(0)}k`, 'Revenue']} />
+                <Bar dataKey="amount" fill="#10B981" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Additional Metrics */}
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Additional Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Booking Status Distribution */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Booking Status Distribution</h3>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Booking Status</h3>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%" key={`booking-status-distribution-${userRole}`}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={mockData.bookings.byStatus}
-                  dataKey="count"
-                  nameKey="status"
                   cx="50%"
                   cy="50%"
+                  labelLine={false}
+                  label={({ status, percent }) => `${status} ${(percent * 100).toFixed(0)}%`}
                   outerRadius={80}
-                  label
+                  fill="#8884d8"
+                  dataKey="count"
                 >
                   {mockData.bookings.byStatus.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
-                <Legend />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Room Type Occupancy */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Room Type Occupancy</h3>
+        {/* Room Type Revenue */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Revenue by Room Type</h3>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%" key={`room-type-occupancy-${userRole}`}>
-              <BarChart data={mockData.occupancy.byRoomType}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={mockData.revenue.byRoomType} layout="horizontal">
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="type" />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="rate" fill="#8884D8" name="Occupancy Rate (%)" />
+                <XAxis type="number" />
+                <YAxis dataKey="type" type="category" />
+                <Tooltip formatter={(value) => [`UGX ${(Number(value) / 1000).toFixed(0)}k`, 'Revenue']} />
+                <Bar dataKey="amount" fill="#8B5CF6" />
               </BarChart>
             </ResponsiveContainer>
           </div>

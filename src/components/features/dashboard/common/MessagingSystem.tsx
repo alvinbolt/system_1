@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Paperclip, Image, File, X, Search, MoreVertical } from 'lucide-react';
+import { Send, Paperclip, Image, File, X, Search, MoreVertical, ArrowLeft, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface Message {
   id: string;
@@ -36,13 +38,21 @@ const MessagingSystem: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRole 
   const [searchQuery, setSearchQuery] = useState('');
   const [isAttachmentMenuOpen, setIsAttachmentMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showConversations, setShowConversations] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Scroll to bottom when new messages arrive
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() && !selectedConversation) return;
@@ -113,236 +123,288 @@ const MessagingSystem: React.FC<{ userRole: 'broker' | 'owner' }> = ({ userRole 
   );
 
   return (
-    <div className="h-full flex">
-      {/* Conversations List */}
-      <div className="w-80 border-r border-gray-200 flex flex-col">
-        <div className="p-4 border-b border-gray-200">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search conversations..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
-            />
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto">
-          {filteredConversations.map(conversation => (
-            <motion.div
-              key={conversation.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedConversation(conversation)}
-              className={`p-4 cursor-pointer hover:bg-gray-50 ${
-                selectedConversation?.id === conversation.id ? 'bg-primary-50' : ''
-              }`}
-            >
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  {conversation.avatar ? (
-                    <img
-                      src={conversation.avatar}
-                      alt={conversation.participantName}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
-                      <span className="text-primary-600 font-medium">
-                        {conversation.participantName.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                  {conversation.unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {conversation.unreadCount}
-                    </span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {conversation.participantName}
-                    </p>
-                    <span className="text-xs text-gray-500">
-                      {conversation.lastMessageTime}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500 truncate">
-                    {conversation.lastMessage}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Header */}
+      <div className="lg:hidden bg-white shadow-sm border-b border-gray-200 p-4">
+        <div className="flex items-center justify-between">
+          {selectedConversation ? (
+            <>
+              <button
+                onClick={() => {
+                  setSelectedConversation(null);
+                  setShowConversations(true);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <h1 className="text-lg font-semibold text-gray-800">
+                {selectedConversation.participantName}
+              </h1>
+              <button
+                onClick={handleLogout}
+                className="text-red-500 hover:text-red-700"
+              >
+                <LogOut className="h-5 w-5" />
+              </button>
+            </>
+          ) : (
+            <>
+              <h1 className="text-lg font-semibold text-gray-800">Messages</h1>
+              <button
+                onClick={handleLogout}
+                className="text-red-500 hover:text-red-700"
+              >
+                <LogOut className="h-5 w-5" />
+              </button>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {selectedConversation ? (
-          <>
-            {/* Chat Header */}
-            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                {selectedConversation.avatar ? (
-                  <img
-                    src={selectedConversation.avatar}
-                    alt={selectedConversation.participantName}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                    <span className="text-primary-600 font-medium">
-                      {selectedConversation.participantName.charAt(0)}
-                    </span>
-                  </div>
-                )}
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">
-                    {selectedConversation.participantName}
-                  </h3>
-                  <p className="text-xs text-gray-500">
-                    {selectedConversation.participantRole}
-                  </p>
-                </div>
-              </div>
-              <button className="text-gray-400 hover:text-gray-500">
-                <MoreVertical className="w-5 h-5" />
-              </button>
+      <div className="h-[calc(100vh-80px)] lg:h-screen flex">
+        {/* Conversations List */}
+        <div className={`${showConversations ? 'block' : 'hidden'} lg:block w-full lg:w-80 border-r border-gray-200 flex flex-col bg-white`}>
+          <div className="p-4 border-b border-gray-200">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search conversations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
             </div>
+          </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map(message => (
+          <div className="flex-1 overflow-y-auto">
+            {filteredConversations.length === 0 ? (
+              <div className="p-8 text-center">
+                <div className="text-gray-400 mb-4">
+                  <MessageSquare className="h-12 w-12 mx-auto" />
+                </div>
+                <p className="text-gray-500">No conversations yet</p>
+                <p className="text-sm text-gray-400">Start a conversation to begin messaging</p>
+              </div>
+            ) : (
+              filteredConversations.map(conversation => (
                 <motion.div
-                  key={message.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${message.senderRole === userRole ? 'justify-end' : 'justify-start'}`}
+                  key={conversation.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => {
+                    setSelectedConversation(conversation);
+                    setShowConversations(false);
+                  }}
+                  className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+                    selectedConversation?.id === conversation.id ? 'bg-primary-50 border-r-2 border-primary-500' : ''
+                  }`}
                 >
-                  <div
-                    className={`max-w-[70%] rounded-lg p-3 ${
-                      message.senderRole === userRole
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-100 text-gray-900'
-                    }`}
-                  >
-                    {message.content && <p className="text-sm">{message.content}</p>}
-                    {message.attachments?.map((attachment, index) => (
-                      <div key={index} className="mt-2">
-                        {attachment.type === 'image' ? (
-                          <img
-                            src={attachment.url}
-                            alt={attachment.name}
-                            className="max-w-full rounded-lg"
-                          />
-                        ) : (
-                          <a
-                            href={attachment.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center space-x-2 text-sm hover:underline"
-                          >
-                            <File className="w-4 h-4" />
-                            <span>{attachment.name}</span>
-                          </a>
-                        )}
-                      </div>
-                    ))}
-                    <div className="mt-1 flex items-center justify-end space-x-1">
-                      <span className="text-xs opacity-75">
-                        {new Date(message.timestamp).toLocaleTimeString()}
-                      </span>
-                      {message.senderRole === userRole && (
-                        <span className="text-xs">
-                          {message.status === 'read' ? '✓✓' : message.status === 'delivered' ? '✓✓' : '✓'}
+                  <div className="flex items-center space-x-3">
+                    <div className="relative">
+                      {conversation.avatar ? (
+                        <img
+                          src={conversation.avatar}
+                          alt={conversation.participantName}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
+                          <span className="text-primary-600 font-medium">
+                            {conversation.participantName.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                      {conversation.unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                          {conversation.unreadCount}
                         </span>
                       )}
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {conversation.participantName}
+                        </p>
+                        <span className="text-xs text-gray-500">
+                          {conversation.lastMessageTime}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500 truncate">
+                        {conversation.lastMessage}
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
+              ))
+            )}
+          </div>
+        </div>
 
-            {/* Message Input */}
-            <div className="p-4 border-t border-gray-200">
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <button
-                    onClick={() => setIsAttachmentMenuOpen(!isAttachmentMenuOpen)}
-                    className="p-2 text-gray-400 hover:text-gray-500"
-                  >
-                    <Paperclip className="w-5 h-5" />
-                  </button>
-                  <AnimatePresence>
-                    {isAttachmentMenuOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="absolute bottom-full left-0 mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200"
-                      >
-                        <div className="p-2">
-                          <button
-                            onClick={() => {
-                              fileInputRef.current?.click();
-                              setIsAttachmentMenuOpen(false);
-                            }}
-                            className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                          >
-                            <Image className="w-4 h-4" />
-                            <span>Send Image</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              fileInputRef.current?.click();
-                              setIsAttachmentMenuOpen(false);
-                            }}
-                            className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                          >
-                            <File className="w-4 h-4" />
-                            <span>Send File</span>
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    className="hidden"
-                    onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
-                  />
+        {/* Chat Area */}
+        <div className={`${!showConversations ? 'block' : 'hidden'} lg:block flex-1 flex flex-col bg-white`}>
+          {selectedConversation ? (
+            <>
+              {/* Chat Header */}
+              <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-white">
+                <div className="flex items-center space-x-3">
+                  {selectedConversation.avatar ? (
+                    <img
+                      src={selectedConversation.avatar}
+                      alt={selectedConversation.participantName}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                      <span className="text-primary-600 font-medium">
+                        {selectedConversation.participantName.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900">
+                      {selectedConversation.participantName}
+                    </h3>
+                    <p className="text-xs text-gray-500">
+                      {selectedConversation.participantRole}
+                    </p>
+                  </div>
                 </div>
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  placeholder="Type a message..."
-                  className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-primary-500 focus:border-primary-500"
-                />
-                <button
-                  onClick={handleSendMessage}
-                  disabled={!newMessage.trim() || isLoading}
-                  className="p-2 text-primary-600 hover:text-primary-700 disabled:opacity-50"
-                >
-                  <Send className="w-5 h-5" />
+                <button className="text-gray-400 hover:text-gray-600">
+                  <MoreVertical className="h-5 w-5" />
                 </button>
               </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.length === 0 ? (
+                  <div className="text-center py-8">
+                    <div className="text-gray-400 mb-4">
+                      <MessageSquare className="h-12 w-12 mx-auto" />
+                    </div>
+                    <p className="text-gray-500">No messages yet</p>
+                    <p className="text-sm text-gray-400">Start the conversation!</p>
+                  </div>
+                ) : (
+                  messages.map(message => (
+                    <motion.div
+                      key={message.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`flex ${message.senderId === 'current-user-id' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        message.senderId === 'current-user-id'
+                          ? 'bg-primary-500 text-white'
+                          : 'bg-gray-100 text-gray-900'
+                      }`}>
+                        <p className="text-sm">{message.content}</p>
+                        {message.attachments && (
+                          <div className="mt-2 space-y-2">
+                            {message.attachments.map((attachment, index) => (
+                              <div key={index} className="bg-white bg-opacity-20 rounded p-2">
+                                {attachment.type === 'image' ? (
+                                  <img src={attachment.url} alt={attachment.name} className="max-w-full rounded" />
+                                ) : (
+                                  <div className="flex items-center space-x-2">
+                                    <File className="h-4 w-4" />
+                                    <span className="text-xs">{attachment.name}</span>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <p className="text-xs opacity-70 mt-1">
+                          {new Date(message.timestamp).toLocaleTimeString()}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Message Input */}
+              <div className="p-4 border-t border-gray-200 bg-white">
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setIsAttachmentMenuOpen(!isAttachmentMenuOpen)}
+                    className="text-gray-400 hover:text-gray-600 p-2"
+                  >
+                    <Paperclip className="h-5 w-5" />
+                  </button>
+                  
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                      placeholder="Type a message..."
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                    
+                    {/* Attachment Menu */}
+                    <AnimatePresence>
+                      {isAttachmentMenuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute bottom-full left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg p-2"
+                        >
+                          <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                          >
+                            <Image className="h-4 w-4" />
+                            <span>Image</span>
+                          </button>
+                          <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                          >
+                            <File className="h-4 w-4" />
+                            <span>File</span>
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={!newMessage.trim()}
+                    className="bg-primary-500 text-white p-2 rounded-lg hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Send className="h-5 w-5" />
+                  </button>
+                </div>
+                
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+                  className="hidden"
+                />
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-gray-400 mb-4">
+                  <MessageSquare className="h-16 w-16 mx-auto" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Select a conversation</h3>
+                <p className="text-gray-500">Choose a conversation to start messaging</p>
+              </div>
             </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-500">
-            Select a conversation to start messaging
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

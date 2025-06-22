@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useNavigate, Outlet, Navigate } from 'react-router-dom';
+import { useNavigate, Outlet, Navigate, useOutlet } from 'react-router-dom';
 import OwnerDashboard from '../components/features/dashboard/hostelOwner/OwnerDashboard';
 import { useAuth } from '../contexts/AuthContext';
 
 const HostelOwnerDashboardPage = () => {
   const { user, isAuthenticated } = useAuth();
+  const outlet = useOutlet();
   
   // If not authenticated or not an owner, redirect to owner login
   if (!isAuthenticated || user?.role !== 'owner') {
@@ -14,7 +15,7 @@ const HostelOwnerDashboardPage = () => {
   // If authenticated and owner, render the dashboard
   return (
     <OwnerDashboard>
-      <Outlet />
+      {outlet}
     </OwnerDashboard>
   );
 };

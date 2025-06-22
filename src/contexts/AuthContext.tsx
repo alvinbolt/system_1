@@ -5,7 +5,7 @@ import { currentUser as mockUser } from '../data/mockData';
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, role?: 'owner' | 'broker' | 'student') => Promise<void>;
   loginBroker: (password: string) => Promise<void>;
   logout: () => void;
   register: (userData: Partial<User>, password: string) => Promise<void>;
@@ -14,14 +14,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(mockUser);
+  const [user, setUser] = useState<User | null>(null);
   const isAuthenticated = !!user;
 
   // Mock login function
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, role: 'owner' | 'broker' | 'student' = 'student') => {
     // In a real app, this would call an API
     if (email && password) {
-      setUser(mockUser);
+      setUser({ ...mockUser, role });
     } else {
       throw new Error('Invalid credentials');
     }
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (userData: Partial<User>, password: string) => {
     // In a real app, this would call an API
     if (userData.email && password) {
-      setUser({ ...mockUser, ...userData });
+      setUser({ ...mockUser, ...userData, id: Date.now().toString() });
     } else {
       throw new Error('Invalid user data');
     }

@@ -20,9 +20,21 @@ const SignupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   
-  const { register } = useAuth();
+  const { register, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'owner') {
+        navigate('/hostel-owner', { replace: true });
+      } else if (user.role === 'broker') {
+        navigate('/hostel-broker', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
 
   // Set role based on the current route
   useEffect(() => {
@@ -99,7 +111,7 @@ const SignupForm = () => {
         }, 
         formData.password
       );
-      navigate('/dashboard');
+      // Navigation is now handled by the useEffect hook
     } catch (err) {
       setErrors({ submit: 'Failed to create account' });
     } finally {
@@ -213,7 +225,7 @@ const SignupForm = () => {
                   id="phone"
                   type="tel"
                   className="pl-10 w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent"
-                  placeholder="e.g. 256781234567"
+                  placeholder="Your phone number"
                   value={formData.phone}
                   onChange={(e) => updateFormData('phone', e.target.value)}
                 />

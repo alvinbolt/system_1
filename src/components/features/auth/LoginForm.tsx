@@ -11,9 +11,21 @@ const LoginForm = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'owner') {
+        navigate('/hostel-owner', { replace: true });
+      } else if (user.role === 'broker') {
+        navigate('/hostel-broker', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,13 +33,15 @@ const LoginForm = () => {
     setIsLoading(true);
     
     try {
-      await login(email, password);
-      // Redirect based on the current route
-      if (location.pathname === '/hostel-owner/login') {
-        navigate('/hostel-owner');
-      } else {
-        navigate('/dashboard');
+      let userRole: 'owner' | 'broker' | 'student' = 'student';
+      if (location.pathname.includes('/hostel-owner')) {
+        userRole = 'owner';
+      } else if (location.pathname.includes('/hostel-broker')) {
+        userRole = 'broker';
       }
+
+      await login(email, password, userRole);
+      // Navigation is now handled by the useEffect hook
     } catch (err) {
       setError('Invalid email or password');
     } finally {
